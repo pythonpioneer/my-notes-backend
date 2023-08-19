@@ -2,15 +2,19 @@
 const connectToMongo = require('./db');
 const express = require('express');
 
+// mongo connection
 connectToMongo();
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// to use req.body, we have to use this middleware
+app.use(express.json());
+
+// all availble routing for the api
+app.use('/api/auth', require('./routes/auth.js'));
+app.use('/api/notes', require('./routes/notes.js'));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});

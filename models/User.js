@@ -18,7 +18,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    timestmp: {
+    timestamp: {
         type: Date,
         default: Date.now,
     }

@@ -3,8 +3,8 @@ const router = express.Router();
 const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 
-// managing all routes for the user (doesn't required authentication)
-router.post('/', [
+// Route 1: To create user, (login not required)
+router.post('/createuser', [
 
     // specifying parameters validations
     body('name').isLength({min: 3}),

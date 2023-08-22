@@ -10,6 +10,7 @@ router.post('/', [
     body('name').isLength({min: 3}),
     body('email').isEmail().custom(async (email) => {
 
+        // find any user with the given email
         if (await User.findOne({ email })) {
             throw new Error('Email already in use');
         }
@@ -18,15 +19,11 @@ router.post('/', [
 
 ] , (req, res) => {
 
-    // validating for errors
+    // validating errors for authentication (creating user)
     const result = validationResult(req);
     if(!result.isEmpty()) {
-        console.log(result["errors"][0]);
-        return res.status(400).json({"errors": result, "desc": result["errors"][0]["msg"] + ", Issue on: " + result["errors"][0]["path"]});
+        return res.status(400).json({"errors": result, "desc": result["errors"][0]["msg"], "where": result["errors"][0]["path"]});
     }
-    
-    // response for the errors to the users
-    // console.log(validateEmail(res.body.email));
     
     // creating user here
     User.create({
@@ -34,8 +31,8 @@ router.post('/', [
         email: req.body.email,
         password: req.body.password
     })
-    .then(user => res.json(user))
-    .catch(err => res.send({
+    .then(user => res.json(user))  // sending response
+    .catch(err => res.send({  // any unrecogonize error will be raised from here
         "issue": "Something went wrong.",
         "error": err
     }));

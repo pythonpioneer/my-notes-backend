@@ -3,6 +3,10 @@ const router = express.Router();
 const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// signature for JSON Web tokens
+const signature = "jaishreekrishna-raadhe-raadhe";
 
 // Route 1: To create user, (login not required)
 router.post('/createuser', [
@@ -27,9 +31,8 @@ router.post('/createuser', [
     }
 
     // generating a secure password
-    var salt = bcrypt.genSaltSync(10);
-    const securedPassword = bcrypt.hashSync(req.body.password, salt);
-    console.log(securedPassword);
+    var salt = bcrypt.genSaltSync(10);  // no-need of await
+    const securedPassword = bcrypt.hashSync(req.body.password, salt);  // no-need of await
     
     // creating user after validating fields
     User.create({
@@ -37,7 +40,19 @@ router.post('/createuser', [
         email: req.body.email,
         password: securedPassword
     })
-    .then(user => res.json(user))  // sending response
+    .then((user) => {  // sending response, when user is created
+
+        // sending user id as payload, accesssing data using id is easier
+        const payloadData = {
+            user: {
+                id: user.id
+            },
+        };
+
+        // sign with RSA SHA256
+        const authToken = jwt.sign(payloadData, signature);
+        res.json({authToken});
+    })  
     .catch(err => res.send({  // any unrecogonize error will be raised from here
         "issue": "Something went wrong.",
         "error": err

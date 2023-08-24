@@ -4,12 +4,13 @@ const User = require('../models/User');
 const { check, body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchuser');
 
 // signature for JSON Web tokens
 const signature = "jaishreekrishna-raadhe-raadhe";
 
 
-// Route 1: To create user: "/api/v1/auth/createuser" (login not required)
+// Route 1: To create user: "/api/v1/auth/createuser" [ using POST ] (login not required)
 router.post('/createuser', [
 
     // specifying parameters specifications for validation
@@ -60,7 +61,7 @@ router.post('/createuser', [
 });
 
 
-// Route 2: To login user: "/api/v1/auth/loginuser" (login not required)
+// Route 2: To login user: "/api/v1/auth/loginuser" [ using POST ] (login not required)
 router.post('/loginuser', [
 
     // specifying parameters specifications for validation
@@ -100,6 +101,17 @@ router.post('/loginuser', [
         const authToken = jwt.sign(payloadData, signature);
         res.json({ authToken });
     } catch (err) { 
+        res.status(500).json({errors: "Internal server error"});
+    }
+});
+
+// Route 3: To get logged in user detail: "/api/v1/auth/getuser" [ using POST ] (login required)
+router.post('/getuser', fetchuser, async (req, res) => {
+    try{
+        const user = await User.findById(req.user.id).select('-password');  // excluding password (because only hash stored)
+        res.send(user);
+    }
+    catch(err) {
         res.status(500).json({errors: "Internal server error"});
     }
 });

@@ -60,7 +60,6 @@ router.post('/createuser', [
         }));
 });
 
-
 // Route 2: To login user: "/api/v1/auth/loginuser" [ using POST ] (login not required)
 router.post('/loginuser', [
 
@@ -70,14 +69,14 @@ router.post('/loginuser', [
 
 ], async (req, res) => {
 
-    // validating errors for authentication (login user)
-    const result = validationResult(req);
-    if (!result.isEmpty()) {
-        return res.status(400).json({ "errors": result, "desc": result["errors"][0]["msg"], "where": result["errors"][0]["path"] });
-    }
-
-    // exception handling, if any unrecogonized error occured
     try {
+        // validating errors for authentication (login user)
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return res.status(400).json({ "errors": result, "desc": result["errors"][0]["msg"], "where": result["errors"][0]["path"] });
+        }
+
+        // exception handling, if any unrecogonized error occured
 
         // fetching value from request body
         const { email, password } = req.body;
@@ -100,19 +99,19 @@ router.post('/loginuser', [
         // sign with RSA SHA256
         const authToken = jwt.sign(payloadData, signature);
         res.json({ authToken });
-    } catch (err) { 
-        res.status(500).json({errors: "Internal server error"});
+    } catch (err) {
+        res.status(500).json({ errors: "Internal server error" });
     }
 });
 
 // Route 3: To get logged in user detail: "/api/v1/auth/getuser" [ using POST ] (login required)
 router.post('/getuser', fetchuser, async (req, res) => {
-    try{
+    try {
         const user = await User.findById(req.user.id).select('-password');  // excluding password (because only hash stored)
         res.send(user);
     }
-    catch(err) {
-        res.status(500).json({errors: "Internal server error"});
+    catch (err) {
+        res.status(500).json({ errors: "Internal server error" });
     }
 });
 

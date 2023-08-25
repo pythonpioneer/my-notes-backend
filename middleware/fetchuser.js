@@ -15,7 +15,7 @@ const fetchuser = (req, res, next) => {
     // now fetch the id
     try {
         const data = jwt.verify(token, signature);
-        req.user = data.user;
+        req.user = data.user;  // passing user in request
 
         next();  // calling next funciton after fetchuser runs
     }

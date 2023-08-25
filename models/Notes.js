@@ -4,6 +4,9 @@ const { Schema } = mongoose;
 
 // creating schema for notes
 const notesSchema = new Schema({
+    user : {
+        type: mongoose.Schema.Types.ObjectId,  // linking notes with user
+    },
     title: {
         type: String, 
         required: true,

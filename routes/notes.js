@@ -18,22 +18,22 @@ router.get('/fetchallnotes', fetchuser, async (req, res) => {
 router.get('/addnotes', fetchuser, [
 
     // validating all inputs
-    body('title', "Enter a valid title").isLength({ min: 1 }),
-    body('description', "Enter description").isLength({ min: 1 }),
+    body('title', "Enter a valid title").isLength({ min: 1, max: 20 }),
+    body('description', "Enter description").isLength({ min: 1, max: 200 }),
 ], async (req, res) => {
 
     try {
         // validating errors for notes addition
         const results = validationResult(req);
         if (!results.isEmpty()) {
-            res.status(400).json({ errors: results.array() });
+            return res.status(400).json({ status: 400, message: results["errors"][0]["msg"], where: results["errors"][0]["path"] });
         }
 
         // if validation succeeded
         const notes = new Notes({
             title: req.body.title,
             description: req.body.description,
-            tag: req.body.tag,
+            tag: req.body?.tag?.length > 0 ? req.body.tag : "General",
             user: req.user.id  // req.user.id is set when fetchuser middleware were called
         });
 
@@ -41,7 +41,7 @@ router.get('/addnotes', fetchuser, [
         const savedNotes = await notes.save();
         res.send(savedNotes);
     } catch (err) {
-        res.status(500).json({ errors: "Internal server error", issue: err });
+        res.status(500).json({ status: 500, message: "Internal server error", issue: err });
     }
 });
 

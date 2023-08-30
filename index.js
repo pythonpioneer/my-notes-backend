@@ -1,6 +1,7 @@
 // importing requirements
 const connectToMongo = require('./db');
 const express = require('express');
+const cors = require("cors");
 
 // mongo connection
 connectToMongo();
@@ -11,6 +12,7 @@ const apiPath = '/api/v1/';
 
 // to use req.body, we have to use this middleware
 app.use(express.json());
+app.use(cors());
 
 // all availble routing for the api
 app.use(apiPath + 'auth', require('./routes/auth.js'));

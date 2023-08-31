@@ -20,7 +20,8 @@ router.get('/addnotes', fetchuser, [
 
     // validating all inputs
     body('title', "Enter a valid title").isLength({ min: 1, max: 20 }),
-    body('description', "Enter description").isLength({ min: 1, max: 200 }),
+    body('description', "Enter valid description").isLength({ min: 1, max: 200 }),
+    body('tag', "Enter a valid tag").isLength({max: 10}),
 ], async (req, res) => {
 
     try {
@@ -66,7 +67,8 @@ router.put('/updatenotes/noteid=:id', fetchuser, [
 
     // validating all inputs
     body('title', "Enter a valid title").isLength({ min: 1, max: 20 }),
-    body('description', "Enter description").isLength({ min: 1, max: 200 }),
+    body('description', "Enter valid description").isLength({ min: 1, max: 200 }),
+    body('tag', "Enter a valid tag").isLength({max: 10}),
 ], async (req, res) => {
     try {
 

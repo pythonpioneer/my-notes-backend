@@ -14,27 +14,27 @@ const signature = "jaishreekrishna-raadhe-raadhe";
 router.post('/createuser', [
 
     // specifying parameters specifications for validation
-    body('name').isLength({ min: 3 }),
-    body('email').isEmail().custom(async (email) => {
+    body('name', 'Enter a valid Name').isLength({ min: 3 }),
+    body('email', 'Enter a valid Email').isEmail().custom(async (email) => {
 
         // find any user with the given email
         if (await User.findOne({ email })) {
             throw new Error('Email already in use');
         }
     }),
-    body('password').isLength({ min: 6 }),
+    body('password', 'Enter a valid Password').isLength({ min: 6 }),
 
 ], async (req, res) => {
 
     // validating errors for authentication (creating user)
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        return res.status(400).json({ "errors": result, "desc": result["errors"][0]["msg"], "where": result["errors"][0]["path"] });
+        return res.status(400).json({ status: 400, message: result["errors"][0]["msg"], where: result["errors"][0]["path"] });
     }
 
     // generating a secure password
-    var salt = bcrypt.genSaltSync(10);  // no-need of await
-    const securedPassword = bcrypt.hashSync(req.body.password, salt);  // no-need of await
+    var salt = bcrypt.genSaltSync(10);  // no-need of await (using sync methods)
+    const securedPassword = bcrypt.hashSync(req.body.password, salt);  // no-need of await (using sync methods)
 
     // creating user after validating fields
     User.create({
@@ -53,10 +53,10 @@ router.post('/createuser', [
 
             // sign with RSA SHA256
             const authToken = jwt.sign(payloadData, signature);
-            res.json({ authToken });
+            res.json({ status: 200, "auth-token": authToken});
         })
         .catch(err => res.status(500).json({  // any unrecogonize error will be raised from here
-            errors: "Internal server error"
+            errors: "Internal server error", issue: err
         }));
 });
 
@@ -73,7 +73,7 @@ router.post('/loginuser', [
         // validating errors for authentication (login user)
         const result = validationResult(req);
         if (!result.isEmpty()) {
-            return res.status(400).json({ "errors": result, "desc": result["errors"][0]["msg"], "where": result["errors"][0]["path"] });
+            return res.status(400).json({ status: 400, message: result["errors"][0]["msg"], where: result["errors"][0]["path"] });
         }
 
         // exception handling, if any unrecogonized error occured
@@ -83,11 +83,11 @@ router.post('/loginuser', [
 
         // find the user with given email and validate, if user exists
         let user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ "error": "Invalid Credentials" });
+        if (!user) return res.status(400).json({ status: 400, message: "Invalid Credentials" });
 
         // now, compare the password using bcrypt.js
         const isPasswordMatches = bcrypt.compareSync(password, user.password);
-        if (!isPasswordMatches) return res.status(400).json({ "error": "Invalid Credentials" });  // password not matched
+        if (!isPasswordMatches) return res.status(400).json({ status: 400, message: "Invalid Credentials" });  // password not matched
 
         // if password matched, sending user id as payload, accesssing data using id is easier
         const payloadData = {
@@ -98,9 +98,9 @@ router.post('/loginuser', [
 
         // sign with RSA SHA256
         const authToken = jwt.sign(payloadData, signature);
-        res.json({ authToken });
+        res.json({ status: 200, "auth-token": authToken});
     } catch (err) {
-        res.status(500).json({ errors: "Internal server error" });
+        res.status(500).json({ status: 500, errors: "Internal server error" });
     }
 });
 
@@ -111,7 +111,7 @@ router.post('/getuser', fetchuser, async (req, res) => {
         res.send(user);
     }
     catch (err) {
-        res.status(500).json({ errors: "Internal server error" });
+        res.status(500).json({ status: 500, errors: "Internal server error" });
     }
 });
 

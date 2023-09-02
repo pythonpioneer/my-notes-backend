@@ -3,7 +3,7 @@ const router = express.Router();
 const Notes = require('../models/Notes');
 const Tags = require('../models/Tags')
 const fetchuser = require('../middleware/fetchuser');
-const { check, body, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 // Route 1: To fetch all notes for logged in user: "/api/v1/notes/fetchallnotes" [ using GET ] (login required)
 router.get('/fetchallnotes', fetchuser, async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/fetchallnotes', fetchuser, async (req, res) => {
 });
 
 // Route 2: To add a note by logged in user: "/api/v1/notes/addnotes" [ using POST ] (login required)
-router.get('/addnotes', fetchuser, [
+router.post('/addnotes', fetchuser, [
 
     // validating all inputs
     body('title', "Enter a valid title").isLength({ min: 1, max: 20 }),

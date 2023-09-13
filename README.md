@@ -69,3 +69,7 @@ This note app helps you to make notes of things you want to do or any inspiratio
       node ./index.js
   
 - It will open your browser(http://localhost:3100)
+
+## To make Contribution
+
+To contribute, go to the [contributing.md file](https://github.com/pythonpioneer/my-notes-backend/blob/master/CONTRIBUTING.md). I will appreciate your efforts.

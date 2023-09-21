@@ -1,4 +1,6 @@
 // importing requirements
+const dotenv = require('dotenv');
+dotenv.config();
 const connectToMongo = require('./db');
 const express = require('express');
 const cors = require("cors");
@@ -7,8 +9,8 @@ const cors = require("cors");
 connectToMongo();
 
 const app = express();
-const port = 3100;
-const apiPath = '/api/v1/';
+const port = process.env.PORT;
+const apiPath = process.env.API_PATH;
 
 // to use req.body, we have to use this middleware
 app.use(express.json());

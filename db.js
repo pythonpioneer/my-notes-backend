@@ -1,9 +1,18 @@
 const mongoose = require('mongoose');
-const mongoURI = `${process.env.MONGO_URI}/my-notes`;
+let mongoURI = `${process.env.MONGO_URI}`;
 
 const connectToMongo = async () => {
-    mongoose.connect(mongoURI);
-    console.log("Conneted to DB. OK!");
+    mongoose.connect(mongoURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+        .then(() => {
+            console.log("Conneted to DB. OK!");
+        })
+        .catch((e) => {
+            console.log("connection failed!!");
+            console.log(e);
+        });
 };
 
 module.exports = connectToMongo;

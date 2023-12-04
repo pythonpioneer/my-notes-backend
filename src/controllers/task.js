@@ -90,31 +90,6 @@ const deleteTask = async (req, res) => {
     }
 };
 
-// to create task with no data
-const createBlankTask = async (req, res) => {
-    try {
-        // confirm that the useer exists
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
-
-        const task = await Task.create({
-            user: req.user.id,
-            taskTitle: "",
-            taskDesc: "",
-            taskCategory: "",
-        });
-
-        // the task is not added in the task model
-        if (!task) return res.status(500).json({ status: 500, message: "Task creation failed!" });
-
-        // task created successfully
-        return res.status(200).json({ status: 200, message: "Task Created!", task: task });
-        
-    } catch (err) {  // unrecogonized errors
-        return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
-    }
-}
-
 // to update the task
 const updateTask = async (req, res) => {
     try {
@@ -145,4 +120,4 @@ const updateTask = async (req, res) => {
 }
 
 // exporting tasks functions
-module.exports = { createTask, getTask, deleteTask, createBlankTask, updateTask };
+module.exports = { createTask, getTask, deleteTask, updateTask };

@@ -1,8 +1,8 @@
 // importing requirements
 const connectToMongo = require('./connectionDB/db');
-const dotenv = require('dotenv').config();
 const express = require('express');
 const cors = require("cors");
+const { PORT, APIPATH } = require('./constants');
 
 
 // connecting with mongodb atlas server
@@ -10,8 +10,6 @@ connectToMongo();
 
 // development environment specifications
 const app = express();
-const PORT = process.env.PORT  || 2100;
-const APIPATH = process.env.API_PATH;  // this can be any string, a starting path for the API
 
 // to use req.body, we have to use this middleware
 app.use(express.json());

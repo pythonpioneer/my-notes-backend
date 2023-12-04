@@ -15,8 +15,8 @@ const connectToMongo = async () => {
             console.log("Successfully Connected to MongoDB atlas");
         })
         .catch((err) => {
-            console.log("Coneection Interrupted");
-            console.log("error: ", err);
+            console.error("Coneection Interrupted");
+            console.error("error: ", err);
         });
 };
 

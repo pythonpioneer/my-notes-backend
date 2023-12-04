@@ -94,25 +94,39 @@ const deleteNote = async (req, res) => {
 };
 
 // to update the notes
-const updatenotes = async (req, res) => {
+const updateNote = async (req, res) => {
     try {
         // fetching data from qyery params
-        const notesId = req.query['notes-id'];
-        const { notesTitle, notesCategory, notesDesc } = req.body;
+        const noteId = req.query['note-id'];
+        const { title, category, desc } = req.body;
 
         // now, find that the user exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
 
         // now, confirm that the notes exists
-        const notes = await notes.findById(notesId);
+        const notes = await Notes.findById(noteId);
         if (!notes) return res.status(404).json({ status: 404, message: "notes Not Found!" });
 
-        // updating all fields
-        notes.notesCategory = notesCategory;
-        notes.notesDesc = notesDesc;
-        notes.notesTitle = notesTitle;
-        notes.save();
+        // identify the fields to be updated
+        let toBeUpdated = false;
+
+        // update fields
+        if (category) {
+            notes.category = category;
+            toBeUpdated = true;
+        }
+        if (desc) {
+            notes.desc = desc;
+            toBeUpdated = true;
+        }
+        if (title) {
+            notes.title = title;
+            toBeUpdated = true;
+        }
+
+        // save the note model, if we updated anything
+        if (toBeUpdated) await notes.save();
 
         // notes updated successfully
         return res.status(200).json({ status: 200, message: "notes Updated!", notes: notes });
@@ -123,4 +137,4 @@ const updatenotes = async (req, res) => {
 }
 
 // exporting notess functions
-module.exports = { getNotes, createNote, deleteNote }; 
+module.exports = { getNotes, createNote, deleteNote, updateNote }; 

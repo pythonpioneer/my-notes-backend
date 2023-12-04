@@ -33,6 +33,7 @@ exports.validateMongoFields = [
 
 // validating updation of task fields
 exports.validateUpdationTaskFields = [
-    ...this.validateTaskFields,
-    ...this.validateMongoFields,
+    ...validateString(['title'], true, { min: 1, max: 100 }),
+    ...validateString(['category'], true, { min: 1, max: 500 }),
+    ...validateString(['desc'], true, { min: 1, max: 200 }),
 ];

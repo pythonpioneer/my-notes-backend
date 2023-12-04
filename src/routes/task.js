@@ -1,6 +1,6 @@
 // importing requirements
 const router = require('express').Router();
-const { getNotes, createNote, deleteNote } = require('../controllers/task');
+const { getNotes, createNote, deleteNote, updateNote } = require('../controllers/task');
 const { validateTaskFields, validateMongoFields, validateUpdationTaskFields } = require('../middlewares/validationFields');
 const { fetchUser } = require('../middlewares/auth/authMiddleware');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
@@ -15,8 +15,8 @@ router.get('/get-notes', fetchUser, getNotes);
 // Route 3: To delete the task: '/api/v1/task/delete?note-id=<mongoose object id>' [using DELETE] (login required)
 router.delete('/delete', validateMongoFields, validateValidationResult, fetchUser, deleteNote);
 
-// Route 4: To update the task: '/api/v1/task/update-task?task-id=<mongoose object id>' [using PUT] (login required)
-router.put('/update-task', validateUpdationTaskFields, validateTaskFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
+// Route 4: To update the task: '/api/v1/task/update?note-id=<mongoose object id>' [using PUT] (login required)
+router.put('/update', validateUpdationTaskFields, validateValidationResult, fetchUser, updateNote);
 
 // exporting the router object
 module.exports = router;

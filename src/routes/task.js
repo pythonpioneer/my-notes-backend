@@ -1,6 +1,6 @@
 // importing requirements
 const router = require('express').Router();
-// const { createTask, getTask, deleteTask, updateTask } = require('../controllers/task');
+const { getNotes } = require('../controllers/task');
 const { validateTaskFields, validateMongoFields, validateUpdationTaskFields } = require('../middlewares/validationFields');
 const { fetchUser } = require('../middlewares/auth/authMiddleware');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
@@ -10,7 +10,7 @@ const { validateValidationResult } = require('../middlewares/validationMiddlewar
 router.post('/create', validateTaskFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
 
 // Route 2: To fetch all the task: '/api/v1/task/get-task' [using GET] (login required)
-router.get('/get-task', fetchUser, (req, res) => {res.send("ok")});
+router.get('/get-notes', fetchUser, getNotes);
 
 // Route 3: To delete the task: '/api/v1/task/delete-task?task-id=<mongoose object id>' [using DELETE] (login required)
 router.delete('/delete-task', validateMongoFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});

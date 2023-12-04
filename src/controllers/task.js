@@ -1,6 +1,6 @@
 // importing all requirements
 const User = require('../models/User');
-const Notes = require('../models/notes');
+const Notes = require('../models/Task');
 const Category = require('../models/Category');
 
 
@@ -42,31 +42,24 @@ const createnotes = async (req, res) => {
 };
 
 // to get the notes by logged in users and delete all the blank notess
-const getnotes = async (req, res) => {
+const getNotes = async (req, res) => {
     try {
         // confirm that the logged in user exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
         // now, fetch all the notess
-        let notess = await notes.find({ user: req.user.id });
-        if (notess.length === 0) return res.status(200).json({ status: 200, message: "You didn't added any notes yet!!" });
-
-        // delete empty notes
-        for (const notes of notess) {
-            if (notes.notesTitle.length === 0 && notes.notesDesc.length === 0) {
-                await notes.findByIdAndDelete(notes._id);
-            }
-        }
+        let notes = await Notes.find({ user: req.user.id });
+        if (notes.length === 0) return res.status(200).json({ status: 200, message: "You didn't added any notes yet!!" });
 
         // Filter non-empty notess
-        const filterednotess = notess.filter((notes) => notes.notesTitle.length > 0 || notes.notesDesc.length > 0);
+        const filteredNotes = notes.filter((note) => note.title.length > 0 || notes.desc.length > 0);
 
         // here, we need to sort the notes by date recent first (issue #21)
-        const sortednotess = filterednotess.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        const sortedNotes = filteredNotes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
         // if there is any notes for the user
-        return res.status(200).json({ status: 200, message: "notess Found!", totalResults: sortednotess.length, notess: sortednotess });
+        return res.status(200).json({ status: 200, message: "notess Found!", totalResults: sortedNotes.length, notes: sortedNotes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -129,4 +122,4 @@ const updatenotes = async (req, res) => {
 }
 
 // exporting notess functions
-module.exports = { createnotes, getnotes, deletenotes, updatenotes };
+module.exports = { getNotes };

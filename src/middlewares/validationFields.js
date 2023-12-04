@@ -21,9 +21,9 @@ exports.validateLoginFields = [
 
 // generating validation array for task title and task descriptions
 exports.validateTaskFields = [
-    ...validateString(['taskTitle'], false, { min: 1, max: 40 }),
-    ...validateString(['taskCategory'], true, { min: 1, max: 20 }),
-    ...validateString(['taskDesc'], false, { min: 1, max: 200 }),
+    ...validateString(['title'], false, { min: 1, max: 100 }),
+    ...validateString(['category'], true, { min: 1, max: 500 }),
+    ...validateString(['desc'], false, { min: 1, max: 200 }),
 ];
 
 // validating the mongoose object id, especially for update and delete not

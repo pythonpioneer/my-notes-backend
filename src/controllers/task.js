@@ -45,23 +45,33 @@ const createNote = async (req, res) => {
 // to get the notes by logged in users and delete all the blank notess
 const getNotes = async (req, res) => {
     try {
+        // fetch all data from query params
+        const page = Number(req.query.page) || 1;
+        let limit = 10;
+        let skip = (page - 1) * limit;
+
         // confirm that the logged in user exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
-        // now, fetch all the notess
-        let notes = await Notes.find({ user: req.user.id });
-        if (notes.length === 0) return res.status(200).json({ status: 200, message: "You didn't added any notes yet!!" });
+        // Fetch all the notes for the user
+        const notes = await Notes.find({ user: req.user.id });
 
-        // Filter non-empty notess
-        const filteredNotes = notes.filter((note) => note.title.length > 0 || notes.desc.length > 0);
+        // Sort the notes by the most recent date
+        const sortedNotes = notes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-        // here, we need to sort the notes by date recent first (issue #21)
-        const sortedNotes = filteredNotes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        // If there are no notes for the user
+        if (sortedNotes.length === 0) {
+            return res.status(200).json({ status: 200, message: "You haven't added any notes yet!" });
+        }
 
-        // if there is any notes for the user
-        return res.status(200).json({ status: 200, message: "notess Found!", totalResults: sortedNotes.length, notes: sortedNotes });
-
+        // Return paginated and sorted notes
+        return res.status(200).json({
+            status: 200,
+            message: "Notes Found!",
+            totalResults: sortedNotes.length,
+            notes: sortedNotes.slice(skip, skip + limit),
+        });
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
     }

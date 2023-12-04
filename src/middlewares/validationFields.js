@@ -28,7 +28,7 @@ exports.validateTaskFields = [
 
 // validating the mongoose object id, especially for update and delete not
 exports.validateMongoFields = [
-    ...validateMongoId(['task-id'])
+    ...validateMongoId(['note-id'])
 ];
 
 // validating updation of task fields

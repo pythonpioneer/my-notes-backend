@@ -68,25 +68,25 @@ const getNotes = async (req, res) => {
 };
 
 // to delete the notes
-const deletenotes = async (req, res) => {
+const deleteNote = async (req, res) => {
     try {
         // fetch the notes id from the query param
-        const notesId = req.query['notes-id'];
+        const noteId = req.query['note-id'];
 
         // verify that the user exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
         // now, confirm that the notes exists
-        const notes = await notes.findById(notesId);
-        if (!notes) return res.status(404).json({ status: 404, message: "notes Not Found!" });
+        const notes = await Notes.findById(noteId);
+        if (!notes) return res.status(404).json({ status: 404, message: "Note Not Found!" });
 
         // now, check that the notes is accessible by the user
-        if (notes.user.toString() != req.user.id) return res.status(403).json({ status: 403, message: "Access Denied!" });
+        if (notes.user.toString() !== req.user.id) return res.status(403).json({ status: 403, message: "Access Denied!" });
 
         // now, delete the notes
-        await notes.findByIdAndDelete(notesId);
-        return res.status(200).json({ status: 200, message: "notes Deleted Successfully!" });
+        await Notes.findByIdAndDelete(noteId);
+        return res.status(200).json({ status: 200, message: "Note Deleted Successfully!", noteId });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -123,4 +123,4 @@ const updatenotes = async (req, res) => {
 }
 
 // exporting notess functions
-module.exports = { getNotes, createNote }; 
+module.exports = { getNotes, createNote, deleteNote }; 

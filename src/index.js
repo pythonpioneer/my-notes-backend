@@ -17,7 +17,7 @@ app.use(cors());
 
 // available routes for API
 app.use(APIPATH + 'user', require('./routes/user'));
-app.use(APIPATH + 'task', require('./routes/task'));
+app.use(APIPATH + 'notes', require('./routes/task'));
 
 // running the app
 app.listen(PORT, () => {

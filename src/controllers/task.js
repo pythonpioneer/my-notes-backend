@@ -5,29 +5,30 @@ const Category = require('../models/Category');
 
 
 // to add notes
-const createnotes = async (req, res) => {
+const createNote = async (req, res) => {
     try {
         // fetching the data from the request body
-        const { notesTitle, notesDesc, notesCategory } = req.body;
+        const { title, desc, category } = req.body;
+        // return res.send("ok")
 
         // confirm that the useer exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
 
         // now, add the notes in the notes model
-        notes.create({
+        Notes.create({
             user: req.user.id,
-            notesTitle: notesTitle,
-            notesDesc: notesDesc,
-            notesCategory: notesCategory
+            title: title,
+            desc: desc,
+            category: category
         })
             .then(async (notes) => {  // notes created successfully
                 
                 // now add the category in category model
-                const category = await Category.findOne({ notesCategory });
-                if (!category) {
+                const noteCategory = await Category.findOne({ category });
+                if (!noteCategory) {
                     // creating category
-                    await Category.create({ notesCategory });
+                    await Category.create({ category });
                 }
 
                 return res.status(200).json({ status: 200, message: "notes Created!", notes: notes });
@@ -122,4 +123,4 @@ const updatenotes = async (req, res) => {
 }
 
 // exporting notess functions
-module.exports = { getNotes };
+module.exports = { getNotes, createNote }; 

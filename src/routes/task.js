@@ -1,13 +1,13 @@
 // importing requirements
 const router = require('express').Router();
-const { getNotes } = require('../controllers/task');
+const { getNotes, createNote } = require('../controllers/task');
 const { validateTaskFields, validateMongoFields, validateUpdationTaskFields } = require('../middlewares/validationFields');
 const { fetchUser } = require('../middlewares/auth/authMiddleware');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
 
 
 // Route 1: To create task: '/api/v1/task/create' [using POST] (login required)
-router.post('/create', validateTaskFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
+router.post('/create', validateTaskFields, validateValidationResult, fetchUser, createNote);
 
 // Route 2: To fetch all the task: '/api/v1/task/get-task' [using GET] (login required)
 router.get('/get-notes', fetchUser, getNotes);

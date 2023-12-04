@@ -1,22 +1,22 @@
 // importing requirements
 const router = require('express').Router();
-const { createTask, getTask, deleteTask, updateTask } = require('../controllers/task');
+// const { createTask, getTask, deleteTask, updateTask } = require('../controllers/task');
 const { validateTaskFields, validateMongoFields, validateUpdationTaskFields } = require('../middlewares/validationFields');
 const { fetchUser } = require('../middlewares/auth/authMiddleware');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
 
 
 // Route 1: To create task: '/api/v1/task/create' [using POST] (login required)
-router.post('/create', validateTaskFields, validateValidationResult, fetchUser, createTask);
+router.post('/create', validateTaskFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
 
 // Route 2: To fetch all the task: '/api/v1/task/get-task' [using GET] (login required)
-router.get('/get-task', fetchUser, getTask);
+router.get('/get-task', fetchUser, (req, res) => {res.send("ok")});
 
 // Route 3: To delete the task: '/api/v1/task/delete-task?task-id=<mongoose object id>' [using DELETE] (login required)
-router.delete('/delete-task', validateMongoFields, validateValidationResult, fetchUser, deleteTask);
+router.delete('/delete-task', validateMongoFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
 
 // Route 4: To update the task: '/api/v1/task/update-task?task-id=<mongoose object id>' [using PUT] (login required)
-router.put('/update-task', validateUpdationTaskFields, validateTaskFields, validateValidationResult, fetchUser, updateTask);
+router.put('/update-task', validateUpdationTaskFields, validateTaskFields, validateValidationResult, fetchUser, (req, res) => {res.send("ok")});
 
 // exporting the router object
 module.exports = router;

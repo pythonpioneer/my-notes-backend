@@ -8,8 +8,8 @@ const Category = require('../models/Category');
 const createNote = async (req, res) => {
     try {
         // fetching the data from the request body
-        const { title, desc, category } = req.body;
-        // return res.send("ok")
+        const { title, desc } = req.body;
+        const category = req.body.category.toLowerCase();
 
         // confirm that the useer exists
         const user = await User.findById(req.user.id);
@@ -98,7 +98,8 @@ const updateNote = async (req, res) => {
     try {
         // fetching data from qyery params
         const noteId = req.query['note-id'];
-        const { title, category, desc } = req.body;
+        const { title, desc } = req.body;
+        const category = req.body.category.toLowerCase();
 
         // now, find that the user exists
         const user = await User.findById(req.user.id);
@@ -129,7 +130,7 @@ const updateNote = async (req, res) => {
         if (toBeUpdated) await notes.save();
 
         // notes updated successfully
-        return res.status(200).json({ status: 200, message: "notes Updated!", notes: notes });
+        return res.status(200).json({ status: 200, message: "Note Updated!", notes: notes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });

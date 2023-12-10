@@ -16,7 +16,7 @@ const notesSchema = new mongoose.Schema({
     },
     desc: {
         type: String,
-        max: [500, 'The description can not exceed 500 characters.'],
+        max: [1000, 'The description can not exceed 1000 characters.'],
     },
     category: {
         type: String,

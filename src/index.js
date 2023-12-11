@@ -21,5 +21,5 @@ app.use(APIPATH + 'notes', require('./routes/task'));
 
 // running the app
 app.listen(PORT, () => {
-    console.log(`TODO app listening on port http://localhost:${PORT}`);
+    console.log(`Notes app listening on port http://localhost:${PORT}`);
 });

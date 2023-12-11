@@ -152,7 +152,19 @@ const updateNote = async (req, res) => {
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
     }
-}
+};
+
+// to mark the note as completed
+const completeNote = async (req, res) => {
+    try {
+        // fetch the note id from query params
+        const noteId = req.query['note-id'];
+        res.send("n" + noteId)
+        
+    } catch (err) {  // unrecogonized errors
+        return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
+    }
+};
 
 // exporting notess functions
-module.exports = { getNotes, createNote, deleteNote, updateNote }; 
+module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote }; 

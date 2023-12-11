@@ -9,7 +9,7 @@ const { validateValidationResult } = require('../middlewares/validationMiddlewar
 // Route 1: To create task: '/api/v1/task/create' [using POST] (login required)
 router.post('/create', validateTaskFields, validateValidationResult, fetchUser, createNote);
 
-// Route 2: To fetch all the task: '/api/v1/task/get-notes' [using GET] (login required)
+// Route 2: To fetch all the task: '/api/v1/task/get-notes?page=<number>&completed=<boolean string>' [using GET] (login required)
 router.get('/get-notes', fetchUser, getNotes);
 
 // Route 3: To delete the task: '/api/v1/task/delete?note-id=<mongoose object id>' [using DELETE] (login required)

@@ -45,7 +45,14 @@ const createNote = async (req, res) => {
 // to get the notes by logged in users and delete all the blank notess
 const getNotes = async (req, res) => {
     try {
-        // fetch all data from query params
+        // fetch complete status from query
+        let isCompleted = req.query.completed;
+ 
+        if (isCompleted === 'true') isCompleted = true;
+        else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
+        else return res.status(404).json({ status: 404, message: "Invalid Query!", info: "Complete takes boolean only." });
+
+        // fetch page number from query params
         const page = Number(req.query.page) || 1;
         let limit = 10;
         let skip = (page - 1) * limit;
@@ -55,7 +62,7 @@ const getNotes = async (req, res) => {
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
         // Fetch all the notes for the user
-        const notes = await Notes.find({ user: req.user.id });
+        const notes = await Notes.find({ user: req.user.id, isCompleted });
 
         // Sort the notes by the most recent date
         const sortedNotes = notes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));

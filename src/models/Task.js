@@ -23,11 +23,11 @@ const notesSchema = new mongoose.Schema({
         max: [20, 'The category can not exceed 20 characters.'],
         default: "General"
     },
-    // isCompleted: {  // feature not enabled yet
-    //     type: Boolean,
-    //     default: false,
-    //     required: true,
-    // }
+    isCompleted: {  // feature not enabled yet
+        type: Boolean,
+        default: false,
+        required: true,
+    }
 }, { timestamps: true });  // it will store the createdAt and updatedAt fields.
 
 // exporting the task model

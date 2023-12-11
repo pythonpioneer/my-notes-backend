@@ -1,6 +1,6 @@
 // importing requirements
 const router = require('express').Router();
-const { getNotes, createNote, deleteNote, updateNote, completeNote } = require('../controllers/task');
+const { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote } = require('../controllers/task');
 const { validateTaskFields, validateMongoFields, validateUpdationTaskFields } = require('../middlewares/validationFields');
 const { fetchUser } = require('../middlewares/auth/authMiddleware');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
@@ -20,6 +20,10 @@ router.put('/update', validateUpdationTaskFields, validateValidationResult, fetc
 
 // Route 5: To mark the note as completed: '/api/v1/notes/complete?note-id=<object id>' [using PATCH] (login required)
 router.patch('/complete', validateMongoFields, validateValidationResult, fetchUser, completeNote);
+
+// Route 6: To undo the completed note: '/api/v1/notes/undo-complete?note-id=<object id>' [using PATCH] (login required)
+router.patch('/undo-complete', validateMongoFields, validateValidationResult, fetchUser, undoCompletedNote);
+
 
 // exporting the router object
 module.exports = router;

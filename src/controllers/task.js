@@ -186,5 +186,10 @@ const completeNote = async (req, res) => {
     }
 };
 
+// to undo the completed note
+const undoCompletedNote = async (req, res) => {
+    console.log("un")
+};
+
 // exporting notess functions
-module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote }; 
+module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote }; 

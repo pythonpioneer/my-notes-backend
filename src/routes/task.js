@@ -19,7 +19,7 @@ router.delete('/delete', validateMongoFields, validateValidationResult, fetchUse
 router.put('/update', validateUpdationTaskFields, validateValidationResult, fetchUser, updateNote);
 
 // Route 5: To mark the note as completed: '/api/v1/notes/complete?note-id=<object id>' [using PATCH] (login required)
-router.patch('/complete', fetchUser, completeNote);
+router.patch('/complete', validateMongoFields, validateValidationResult, fetchUser, completeNote);
 
 // exporting the router object
 module.exports = router;

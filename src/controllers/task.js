@@ -159,8 +159,28 @@ const completeNote = async (req, res) => {
     try {
         // fetch the note id from query params
         const noteId = req.query['note-id'];
-        res.send("n" + noteId)
-        
+
+        // now, find that the user exists
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
+
+        // now, confirm that the notes exists
+        const notes = await Notes.findById(noteId);
+        if (!notes) return res.status(404).json({ status: 404, message: "Note Not Found!" });
+
+        // now, check that the notes is accessible by the user
+        if (notes.user.toString() !== req.user.id) return res.status(403).json({ status: 403, message: "Access Denied!" });
+
+        // check that the note is not completed yet
+        if (notes.isCompleted === true) return res.status(400).json({ status: 400, message: 'Note is already completed' });
+
+        // now, mark the note as completed
+        notes.isCompleted = true;
+        notes.save();
+
+        // notify the user
+        return res.status(200).json({ status: 200, message: `Congratulate, ${user.fullName.split(' ')[0]}!!`, info: 'User completed the note' });
+
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
     }

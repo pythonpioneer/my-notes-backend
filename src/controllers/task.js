@@ -188,7 +188,34 @@ const completeNote = async (req, res) => {
 
 // to undo the completed note
 const undoCompletedNote = async (req, res) => {
-    console.log("un")
+    try {
+        // fetch the note id from query params
+        const noteId = req.query['note-id'];
+
+        // now, find that the user exists
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
+
+        // now, confirm that the notes exists
+        const notes = await Notes.findById(noteId);
+        if (!notes) return res.status(404).json({ status: 404, message: "Note Not Found!" });
+
+        // now, check that the notes is accessible by the user
+        if (notes.user.toString() !== req.user.id) return res.status(403).json({ status: 403, message: "Access Denied!" });
+
+        // check that the note is not completed yet
+        if (notes.isCompleted === false) return res.status(400).json({ status: 400, message: 'Note is not completed. Can not revert the note' });
+
+        // now, mark the note as completed
+        notes.isCompleted = false;
+        notes.save();
+
+        // notify the user
+        return res.status(200).json({ status: 200, message: "Note Reverted!!", info: 'User undo the completed note' });
+
+    } catch (err) {  // unrecogonized errors
+        return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
+    }
 };
 
 // exporting notess functions

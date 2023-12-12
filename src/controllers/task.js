@@ -179,7 +179,7 @@ const completeNote = async (req, res) => {
         notes.save();
 
         // notify the user
-        return res.status(200).json({ status: 200, message: `Congratulate, ${user.fullName.split(' ')[0]}!!`, info: 'User completed the note' });
+        return res.status(200).json({ status: 200, message: `Congratulate, ${user.fullName.split(' ')[0]}!!`, info: 'User completed the note', noteId });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -211,7 +211,7 @@ const undoCompletedNote = async (req, res) => {
         notes.save();
 
         // notify the user
-        return res.status(200).json({ status: 200, message: "Note Reverted!!", info: 'User undo the completed note' });
+        return res.status(200).json({ status: 200, message: "Note Reverted!!", info: 'User undo the completed note', noteId });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });

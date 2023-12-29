@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const Notes = require('../models/Task');
 const Category = require('../models/Category');
+const { searchNote } = require('../utility/helper/searchNote');
 
 
 // to add notes
@@ -46,7 +47,8 @@ const createNote = async (req, res) => {
 const getNotes = async (req, res) => {
     try {
         // fetch complete status from query
-        let isCompleted = req.query.completed;
+        let isCompleted = req.query?.completed;
+        let searchText = req.query?.search?.toLowerCase();
  
         if (isCompleted === 'true') isCompleted = true;
         else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
@@ -62,7 +64,10 @@ const getNotes = async (req, res) => {
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
         // Fetch all the notes for the user
-        const notes = await Notes.find({ user: req.user.id, isCompleted });
+        let notes = await Notes.find({ user: req.user.id, isCompleted });
+
+        // filtering notes that contain the particular search text
+        notes = searchNote(notes, searchText);
 
         // Sort the notes by the most recent date
         const sortedNotes = notes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));

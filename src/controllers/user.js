@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
 
                 // generate the authentication user
                 const authToken = generateToken(payloadData);
-                return res.status(200).json({ status: 200, message: "User Created! Logged In!", "auth-token": authToken });
+                return res.status(200).json({ status: 200, message: `Hello ${user?.fullName?.split(' ')[0] || 'User Logged In'}!!`, "auth-token": authToken });
             })
             .catch(err => {  // error while saving the user in User model
                 return res.status(500).json({ status: 500, message: "User Not Created!", errors: err });
@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
 
         // generate the authentication user
         const authToken = generateToken(payloadData);
-        return res.status(200).json({ status: 200, message: "User Logged In!!", "auth-token": authToken });
+        return res.status(200).json({ status: 200, message: `Hello ${user?.fullName?.split(' ')[0] || 'User Logged In'}!!`, "auth-token": authToken });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Error!" });

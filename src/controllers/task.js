@@ -32,10 +32,10 @@ const createNote = async (req, res) => {
                     await Category.create({ category });
                 }
 
-                return res.status(200).json({ status: 200, message: "notes Created!", notes: notes });
+                return res.status(200).json({ status: 200, message: `Hey ${user?.fullName?.split(' ')[0] || 'There!'}, Note Added Successfully!`, notes: notes });
             })
             .catch(err => {  // the notes is not added in the notes model
-                return res.status(500).json({ status: 500, message: "notes creation failed!", errors: err });
+                return res.status(500).json({ status: 500, message: "Notes Creation Failed!", errors: err });
             });
 
     } catch (err) {  // unrecogonized errors
@@ -125,11 +125,11 @@ const updateNote = async (req, res) => {
 
         // now, find that the user exists
         const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ status: 404, message: "User not found!!" });
+        if (!user) return res.status(404).json({ status: 404, message: "User Not Found!!" });
 
         // now, confirm that the notes exists
         const notes = await Notes.findById(noteId);
-        if (!notes) return res.status(404).json({ status: 404, message: "notes Not Found!" });
+        if (!notes) return res.status(404).json({ status: 404, message: "Note Not Found!" });
 
         // identify the fields to be updated
         let toBeUpdated = false;
@@ -152,7 +152,7 @@ const updateNote = async (req, res) => {
         if (toBeUpdated) await notes.save();
 
         // notes updated successfully
-        return res.status(200).json({ status: 200, message: "Note Updated!", notes: notes });
+        return res.status(200).json({ status: 200, message: `Hey ${user?.fullName?.split(' ')[0] || 'There!'}, Note Updated Successfully!`, notes: notes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -184,7 +184,7 @@ const completeNote = async (req, res) => {
         notes.save();
 
         // notify the user
-        return res.status(200).json({ status: 200, message: `Congratulate, ${user.fullName.split(' ')[0]}!!`, info: 'User completed the note', noteId });
+        return res.status(200).json({ status: 200, message: `Congratulate, ${user?.fullName?.split(' ')[0] || 'There!!'}!!`, info: 'User completed the note', noteId });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -209,7 +209,7 @@ const undoCompletedNote = async (req, res) => {
         if (notes.user.toString() !== req.user.id) return res.status(403).json({ status: 403, message: "Access Denied!" });
 
         // check that the note is not completed yet
-        if (notes.isCompleted === false) return res.status(400).json({ status: 400, message: 'Note is not completed. Can not revert the note' });
+        if (notes.isCompleted === false) return res.status(400).json({ status: 400, message: 'Note not completed. Can not revert the note' });
 
         // now, mark the note as completed
         notes.isCompleted = false;

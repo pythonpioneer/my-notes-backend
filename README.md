@@ -83,11 +83,6 @@ Before you start contributing to this project, please review the [LICENSE](https
   
 - It will open your browser(http://localhost:3100)
 
-## Note
-
-The app is built on top of [Create React App](https://github.com/facebook/create-react-app), which means all features that create-react-app supports are available.
-
-
 ## To Contribute
 
 To contribute, go to the [contributing.md file](https://github.com/pythonpioneer/pythonpioneer/blob/main/guidelines/CONTRIBUTING.md). I will appreciate your efforts.

@@ -37,3 +37,8 @@ exports.validateUpdationTaskFields = [
     ...validateString(['category'], true, { min: 1, max: 20 }),
     ...validateString(['desc'], true, { min: 1, max: 1000 }),
 ];
+
+// to validate email field
+exports.validateEmailField = [
+    ...validateEmail(['email']),
+];

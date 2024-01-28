@@ -72,5 +72,18 @@ const loginUser = async (req, res) => {
     }
 };
 
+// to generate otp to recover passwords
+const generateOtp = async (req, res) => {
+
+    // fetch the email of the user from req body
+    const { email } = req.body;
+
+    // find that the user exists
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ status: 404, message: "User Not Found!!" });
+
+    // now, testing code -> to send the email to the user
+};
+
 // exporting all the controller functions
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser, generateOtp };

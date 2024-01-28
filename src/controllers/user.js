@@ -4,6 +4,7 @@ const { generateToken } = require('../middlewares/auth/authMiddleware');
 const { generatePassword, comparePassword } = require('../middlewares/auth/passwordMiddleware');
 const { sendMail } = require('../utility/helper/sendMail');
 const { generateOtp } = require('../utility/helper/pins');
+const { otpEmailTemplate } = require('../utility/helper/emailTemplates');
 
 
 // to create a user
@@ -85,11 +86,11 @@ const generateOtpToRecoverPassword = async (req, res) => {
     if (!user) return res.status(404).json({ status: 404, message: "User Not Found!!" });
 
     // now, testing code -> to send the email to the user
-    // sendMail({
-    //     to: email,
-    //     subject: "test generate otp",
-    //     html: 'to test only'
-    // });
+    sendMail({
+        to: email,
+        subject: "test generate otp",
+        html: otpEmailTemplate("hrk", 1234, "Recover Password")
+    });
     return res.send(generateOtp())
 };
 

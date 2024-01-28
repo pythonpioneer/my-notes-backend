@@ -1,6 +1,6 @@
 // importing requirements
 const router = require('express').Router();
-const { registerUser, loginUser, generateOtp } = require('../controllers/user');
+const { registerUser, loginUser, generateOtpToRecoverPassword } = require('../controllers/user');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
 const { validateRegistrationField, validateLoginFields, validateEmailField } = require('../middlewares/validationFields');
 
@@ -12,7 +12,7 @@ router.post('/register', validateRegistrationField, validateValidationResult, re
 router.post('/login', validateLoginFields, validateValidationResult, loginUser);
 
 // Route 3: To generate otp to change password: '/api/v1/user/generate' [using POST] (login not required)
-router.post('/generate', validateEmailField, validateValidationResult, generateOtp);
+router.post('/generate', validateEmailField, validateValidationResult, generateOtpToRecoverPassword);
 
 // exporting the router object
 module.exports = router;

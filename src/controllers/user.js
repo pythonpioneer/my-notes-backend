@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const { generateToken } = require('../middlewares/auth/authMiddleware');
 const { generatePassword, comparePassword } = require('../middlewares/auth/passwordMiddleware');
+const { sendMail } = require('../utility/helper/sendMail');
 
 
 // to create a user
@@ -83,6 +84,11 @@ const generateOtp = async (req, res) => {
     if (!user) return res.status(404).json({ status: 404, message: "User Not Found!!" });
 
     // now, testing code -> to send the email to the user
+    sendMail({
+        to: email,
+        subject: "test generate otp",
+        html: 'to test only'
+    });
 };
 
 // exporting all the controller functions

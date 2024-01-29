@@ -92,6 +92,10 @@ const generateOtpToRecoverPassword = async (req, res) => {
         html: otpEmailTemplate("hrk", 1234, "Recover Password")
     });
     return res.send(generateOtp())
+
+
+
+    /// save the otp to the user model and use aggregation pipelines if possible ---- >
 };
 
 // exporting all the controller functions

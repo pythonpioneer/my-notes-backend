@@ -13,12 +13,12 @@ const verificationSchema = new mongoose.Schema({
     otp: {
         type: String,
         required: true,
-        min: [4, 'Password must be atleast 6 characters long.'],
-        max: [4, 'Password must be atleast 6 characters long.'],
+        min: [4, 'Password must be atleast 4 characters long.'],
+        max: [4, 'Password must be atleast 4 characters long.'],
     },
-    timeStamp: {  // delete this record after 15 mins
+    timeStamp: {  // delete this record after 2 mins
         type: Date,
-        expires: 900,  
+        expires: 120,
         default: Date.now,
     }
 });

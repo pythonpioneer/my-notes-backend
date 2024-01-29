@@ -10,6 +10,7 @@ exports.sendMail = (options) => {
         let transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
             port: process.env.MAIL_PORT,
+            secure: true, // Use a secure connection (TLS)
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASS

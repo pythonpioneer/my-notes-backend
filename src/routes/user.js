@@ -14,5 +14,10 @@ router.post('/login', validateLoginFields, validateValidationResult, loginUser);
 // Route 3: To generate otp to change password: '/api/v1/user/generate' [using POST] (login not required)
 router.post('/generate', validateEmailField, validateValidationResult, generateOtpToRecoverPassword);
 
+// Route 4: To recover/set the password using OTP: '/api/v1/user/set-password' [using POST] (login not required)
+router.post('/set-password', (req, res) => {
+    res.send("ok");
+});
+
 // exporting the router object
 module.exports = router;

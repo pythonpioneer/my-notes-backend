@@ -18,7 +18,7 @@ app.use(cors());
 // available routes for API
 app.use(APIPATH + 'user', require('./routes/user'));
 app.use(APIPATH + 'notes', require('./routes/task'));
-app.use(APIPATH + 'verify', (req, res) => {
+app.use(APIPATH + 'verify', (_, res) => {
     res.status(200).json({ status: 200, message: "App is Running", info: "to test only." });
 });
 

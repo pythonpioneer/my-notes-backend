@@ -4,6 +4,7 @@ const { validateEmail } = require("../utility/validateFields/emailField");
 const { validatePassword } = require("../utility/validateFields/passwordField");
 const { validateString } = require("../utility/validateFields/stringField");
 const { validateMongoId } = require("../utility/validateFields/mongoField");
+const { validateOtp } = require("../utility/validateFields/otpField");
 
 
 // generating validation array for registration fields
@@ -36,4 +37,16 @@ exports.validateUpdationTaskFields = [
     ...validateString(['title'], true, { min: 1, max: 100 }),
     ...validateString(['category'], true, { min: 1, max: 20 }),
     ...validateString(['desc'], true, { min: 1, max: 1000 }),
+];
+
+// to validate email field
+exports.validateEmailField = [
+    ...validateEmail(['email']),
+];
+
+// to validate the otp field
+exports.validateRecoverPasswordFields = [
+    ...validateEmail(['email']),
+    ...validateOtp(['otp'], false, 4),
+    ...validatePassword(['password']),
 ];

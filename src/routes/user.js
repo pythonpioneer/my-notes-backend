@@ -2,7 +2,7 @@
 const router = require('express').Router();
 const { registerUser, loginUser, generateOtpToRecoverPassword } = require('../controllers/user');
 const { validateValidationResult } = require('../middlewares/validationMiddleware');
-const { validateRegistrationField, validateLoginFields, validateEmailField } = require('../middlewares/validationFields');
+const { validateRegistrationField, validateLoginFields, validateEmailField, validateOtpField } = require('../middlewares/validationFields');
 
 
 // Route 1: To create user: '/api/v1/user/register' [using POST] (login not required)
@@ -15,7 +15,7 @@ router.post('/login', validateLoginFields, validateValidationResult, loginUser);
 router.post('/generate', validateEmailField, validateValidationResult, generateOtpToRecoverPassword);
 
 // Route 4: To recover/set the password using OTP: '/api/v1/user/set-password' [using POST] (login not required)
-router.post('/set-password', (req, res) => {
+router.post('/set-password', validateOtpField, validateValidationResult, (req, res) => {
     res.send("ok");
 });
 

@@ -4,6 +4,7 @@ const { validateEmail } = require("../utility/validateFields/emailField");
 const { validatePassword } = require("../utility/validateFields/passwordField");
 const { validateString } = require("../utility/validateFields/stringField");
 const { validateMongoId } = require("../utility/validateFields/mongoField");
+const { validateOtp } = require("../utility/validateFields/otpField");
 
 
 // generating validation array for registration fields
@@ -41,4 +42,9 @@ exports.validateUpdationTaskFields = [
 // to validate email field
 exports.validateEmailField = [
     ...validateEmail(['email']),
+];
+
+// to validate the otp field
+exports.validateOtpField = [
+    ...validateOtp(['otp'], false, 4),
 ];

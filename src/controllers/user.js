@@ -123,7 +123,6 @@ const generateOtpToRecoverPassword = async (req, res) => {
 
 // Set the new password after validating the otp
 const setPassword = async (req, res) => {
-
     try {
         // fetch the email and the otp from the request body
         const { email, otp, password } = req.body;
@@ -136,8 +135,15 @@ const setPassword = async (req, res) => {
         const reqUser = await Verify.findOne({ email });
         if (!reqUser) return res.status(400).json({ status: 400, message: "OTP expired, Regenrate the OTP." });
 
+        // now, check that the password recovery is active or not
+        if (!reqUser.active) return res.status(400).json({ status: 400, message: "API Session expired, Already changed your password" });
+
         // now, compare the otp generated and received
         if (otp !== reqUser.otp) return res.status(400).json({ status: 400, message: "OTP didn't matched" });
+
+        // now, deactivate the user session
+        reqUser.active = false;
+        reqUser.save();
 
         // now, hash the new password
         const securePassword = generatePassword(password);

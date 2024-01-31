@@ -16,6 +16,11 @@ const verificationSchema = new mongoose.Schema({
         min: [4, 'Password must be atleast 4 characters long.'],
         max: [4, 'Password must be atleast 4 characters long.'],
     },
+    active: {  // this must be deactivated after changing the password
+        type: Boolean,
+        required: true,
+        default: true,  // make it false after changing password
+    },
     timeStamp: {  // delete this record after 2 mins
         type: Date,
         expires: 120,

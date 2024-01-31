@@ -45,6 +45,8 @@ exports.validateEmailField = [
 ];
 
 // to validate the otp field
-exports.validateOtpField = [
+exports.validateRecoverPasswordFields = [
+    ...validateEmail(['email']),
     ...validateOtp(['otp'], false, 4),
+    ...validatePassword(['password']),
 ];

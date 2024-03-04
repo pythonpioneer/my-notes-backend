@@ -24,7 +24,7 @@ const createNote = async (req, res) => {
             category: category
         })
             .then(async (notes) => {  // notes created successfully
-                
+
                 // now add the category in category model
                 const noteCategory = await Category.findOne({ category });
                 if (!noteCategory) {
@@ -49,7 +49,7 @@ const getNotes = async (req, res) => {
         // fetch complete status from query
         let isCompleted = req.query?.completed;
         let searchText = req.query?.search?.toLowerCase();
- 
+
         if (isCompleted === 'true') isCompleted = true;
         else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
         else return res.status(404).json({ status: 404, message: "Invalid Query!", info: "Complete takes boolean only." });
@@ -223,5 +223,75 @@ const undoCompletedNote = async (req, res) => {
     }
 };
 
+// to fetch all notes with optimized queries
+const fetchAllNotes = async (req, res) => {
+    try {
+        // fetch complete status from query
+        let isCompleted = req.query?.completed;
+        const page = Number(req.query.page) || 1;
+        let searchText = req.query?.search?.toLowerCase();
+
+        if (isCompleted === 'true') isCompleted = true;
+        else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
+        else return res.status(404).json({ status: 404, message: "Invalid Query!", info: "Complete takes boolean only." });
+
+        // fetch page number from query params
+        let limit = 10;
+        let skip = (page - 1) * limit;
+
+        // confirm that the logged in user exists
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
+
+        // now, i want to count the total documents length
+        const totalDocuments = await Notes.aggregate([
+            {
+                $match: {
+                    user: user._id,
+                    isCompleted: isCompleted,
+                    $or: [
+                        { title: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive title search
+                        { category: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive category search
+                        { description: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive description search
+                    ],
+                },
+            },
+            {  // count the length of all documents
+                $group: {
+                    _id: null,
+                    count: {
+                        $sum: 1,
+                    },
+                }
+            }
+        ]);
+
+        // now, we want to fetch all the notes based on query
+        const notes = await Notes.aggregate([
+            {
+                $match: {
+                    user: user._id,
+                    isCompleted: isCompleted,
+                    $or: [
+                        { title: { $regex: new RegExp(searchText, 'i') } },
+                        { category: { $regex: new RegExp(searchText, 'i') } },
+                        { description: { $regex: new RegExp(searchText, 'i') } },
+                    ],
+                },
+            },
+            { $sort: { updatedAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
+        ]);
+
+        return res.status(200).json({ message: "default", result: totalDocuments[0].count, notes });
+
+    } catch (err) {  // unrecogonized errors
+        return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
+    }
+}
+
+
+
 // exporting notess functions
-module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote }; 
+module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote, fetchAllNotes }; 

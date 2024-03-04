@@ -2,7 +2,6 @@
 const User = require('../models/User');
 const Notes = require('../models/Task');
 const Category = require('../models/Category');
-const { searchNote } = require('../utility/helper/searchNote');
 
 
 // to add notes

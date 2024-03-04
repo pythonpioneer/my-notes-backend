@@ -50,12 +50,14 @@ const getNotes = async (req, res) => {
         let isCompleted = req.query?.completed;
         let searchText = req.query?.search?.toLowerCase();
 
+        let page = Number(req.query.page) || 1;
+        if (page <= 0) page = 1;
+
         if (isCompleted === 'true') isCompleted = true;
         else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
         else return res.status(404).json({ status: 404, message: "Invalid Query!", info: "Complete takes boolean only." });
 
         // fetch page number from query params
-        const page = Number(req.query.page) || 1;
         let limit = 10;
         let skip = (page - 1) * limit;
 
@@ -63,31 +65,49 @@ const getNotes = async (req, res) => {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
 
-        // Fetch all the notes for the user
-        let notes = await Notes.find({ user: req.user.id, isCompleted });
-
-        // filtering notes that contain the particular search text
-        notes = searchNote(notes, searchText);
-
-        // Sort the notes by the most recent date
-        const sortedNotes = notes.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-        // If there are no notes for the user
-        if (sortedNotes.length === 0) {
-            return res.status(200).json({ status: 200, message: "You haven't added any notes yet!" });
-        }
+        const notes = await Notes.aggregate([
+            {
+                $match: {
+                    user: user._id,
+                    isCompleted: isCompleted,
+                    $or: [
+                        { title: { $regex: new RegExp(searchText, 'i') } },
+                        { category: { $regex: new RegExp(searchText, 'i') } },
+                        { desc: { $regex: new RegExp(searchText, 'i') } },
+                    ],
+                },
+            },
+            {
+                $facet: {
+                    totalResults: [
+                        {
+                            $group: {
+                                _id: null,
+                                count: { $sum: 1 },
+                            },
+                        },
+                    ],
+                    notes: [
+                        { $sort: { updatedAt: -1 } },
+                        { $skip: skip },
+                        { $limit: limit },
+                    ],
+                },
+            },
+        ]);
 
         // Return paginated and sorted notes
         return res.status(200).json({
             status: 200,
             message: "Notes Found!",
-            totalResults: sortedNotes.length,
-            notes: sortedNotes.slice(skip, skip + limit),
+            totalResults: notes[0].totalResults[0].count,
+            notes: notes[0].notes,
         });
+
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
     }
-};
+}
 
 // to delete the notes
 const deleteNote = async (req, res) => {
@@ -223,26 +243,12 @@ const undoCompletedNote = async (req, res) => {
     }
 };
 
-// to fetch all notes with optimized queries
-const fetchAllNotes = async (req, res) => {
-    try {
-        // fetch complete status from query
-        let isCompleted = req.query?.completed;
-        const page = Number(req.query.page) || 1;
-        let searchText = req.query?.search?.toLowerCase();
+// exporting notess functions
+module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote };
 
-        if (isCompleted === 'true') isCompleted = true;
-        else if (isCompleted === 'false' || !isCompleted) isCompleted = false;
-        else return res.status(404).json({ status: 404, message: "Invalid Query!", info: "Complete takes boolean only." });
 
-        // fetch page number from query params
-        let limit = 10;
-        let skip = (page - 1) * limit;
 
-        // confirm that the logged in user exists
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ status: 404, message: "User Not Found!" });
-
+/* aggregation pipeline used to fetch the data
         // now, i want to count the total documents length
         const totalDocuments = await Notes.aggregate([
             {
@@ -283,15 +289,4 @@ const fetchAllNotes = async (req, res) => {
             { $skip: skip },
             { $limit: limit },
         ]);
-
-        return res.status(200).json({ message: "default", result: totalDocuments[0].count, notes });
-
-    } catch (err) {  // unrecogonized errors
-        return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
-    }
-}
-
-
-
-// exporting notess functions
-module.exports = { getNotes, createNote, deleteNote, updateNote, completeNote, undoCompletedNote, fetchAllNotes }; 
+*/

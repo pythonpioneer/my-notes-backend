@@ -48,7 +48,7 @@ const getNotes = async (req, res) => {
     try {
         // fetch complete status from query
         let isCompleted = req.query?.completed;
-        let searchText = req.query?.search?.toLowerCase();
+        let searchText = req.query?.search;
 
         let page = Number(req.query.page) || 1;
         if (page <= 0) page = 1;
@@ -100,8 +100,8 @@ const getNotes = async (req, res) => {
         return res.status(200).json({
             status: 200,
             message: "Notes Found!",
-            totalResults: notes[0].totalResults[0].count,
-            notes: notes[0].notes,
+            totalResults: notes[0]?.totalResults[0]?.count,
+            notes: notes[0]?.notes,
         });
 
     } catch (err) {  // unrecogonized errors

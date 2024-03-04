@@ -252,7 +252,7 @@ const fetchAllNotes = async (req, res) => {
                     $or: [
                         { title: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive title search
                         { category: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive category search
-                        { description: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive description search
+                        { desc: { $regex: new RegExp(searchText, 'i') } }, // Case-insensitive description search
                     ],
                 },
             },
@@ -275,7 +275,7 @@ const fetchAllNotes = async (req, res) => {
                     $or: [
                         { title: { $regex: new RegExp(searchText, 'i') } },
                         { category: { $regex: new RegExp(searchText, 'i') } },
-                        { description: { $regex: new RegExp(searchText, 'i') } },
+                        { desc: { $regex: new RegExp(searchText, 'i') } },
                     ],
                 },
             },

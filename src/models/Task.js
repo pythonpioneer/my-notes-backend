@@ -12,15 +12,15 @@ const notesSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        max: [100, 'The title can not exceed 100 characters.'],
+        max: [200, 'The title can not exceed 100 characters.'],
     },
     desc: {
         type: String,
-        max: [1000, 'The description can not exceed 1000 characters.'],
+        max: [5000, 'The description can not exceed 1000 characters.'],
     },
     category: {
         type: String,
-        max: [20, 'The category can not exceed 20 characters.'],
+        max: [100, 'The category can not exceed 20 characters.'],
         default: "General"
     },
     isCompleted: {  // feature not enabled yet

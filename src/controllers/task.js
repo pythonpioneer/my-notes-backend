@@ -9,7 +9,7 @@ const createNote = async (req, res) => {
     try {
         // fetching the data from the request body
         const { title, desc } = req.body;
-        const category = req.body.category.toLowerCase();
+        const category = req.body?.category?.toLowerCase();
 
         // confirm that the useer exists
         const user = await User.findById(req.user.id);
@@ -127,7 +127,7 @@ const deleteNote = async (req, res) => {
 
         // now, delete the notes
         await Notes.findByIdAndDelete(noteId);
-        return res.status(200).json({ status: 200, message: "Note Deleted Successfully!", noteId });
+        return res.status(200).json({ status: 200, message: "Note Deleted Successfully!", noteId, notes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -145,6 +145,8 @@ const updateNote = async (req, res) => {
         // now, find that the user exists
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ status: 404, message: "User Not Found!!" });
+
+        (`updating note for user: ${req.user.id}`);
 
         // now, confirm that the notes exists
         const notes = await Notes.findById(noteId);
@@ -203,7 +205,7 @@ const completeNote = async (req, res) => {
         notes.save();
 
         // notify the user
-        return res.status(200).json({ status: 200, message: `Congratulate, ${user?.fullName?.split(' ')[0] || 'There!!'}!!`, info: 'User completed the note', noteId });
+        return res.status(200).json({ status: 200, message: `Congratulate, ${user?.fullName?.split(' ')[0] || 'There!!'}!!`, info: 'User completed the note', noteId, notes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });
@@ -235,7 +237,7 @@ const undoCompletedNote = async (req, res) => {
         notes.save();
 
         // notify the user
-        return res.status(200).json({ status: 200, message: "Note Reverted!!", info: 'User undo the completed note', noteId });
+        return res.status(200).json({ status: 200, message: "Note Reverted!!", info: 'User undo the completed note', noteId, notes });
 
     } catch (err) {  // unrecogonized errors
         return res.status(500).json({ status: 500, message: "Internal Server Errors", errors: err });

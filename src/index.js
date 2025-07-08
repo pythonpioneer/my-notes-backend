@@ -50,13 +50,13 @@ io.on('connection', (socket) => {
     // listen for note complete events
     socket.on('note:complete', ({ userId, note }) => {
         socket.to(userId).emit('note:completed', note);
-        socket.to(userId).emit('note:section-added', note);
+        socket.to(userId).emit('note:completed-added', note);
     });
 
     // listen for note undo complete events
     socket.on('note:undo-complete', ({ userId, note }) => {
         socket.to(userId).emit('note:undo-completed', note);
-        socket.to(userId).emit('note:section-added', note);
+        socket.to(userId).emit('note:pending-added', note);
     });
 
     socket.on('disconnect', () => {
